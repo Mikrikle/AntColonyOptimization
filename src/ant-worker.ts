@@ -1,3 +1,5 @@
+import { AntWorkerRequest, AntWorkerResponse } from "./message-models";
+
 /**
  * Gets random int
  * @param min
@@ -9,23 +11,6 @@ function randomInt(min: number, max: number): number {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min;
 }
-
-// тестовый граф
-function makeGraphDistances(size: number) {
-  let dists: number[][] = Array<number[]>(size);
-  for (let i = 0; i < size; ++i) dists[i] = Array<number>(size).fill(0);
-
-  for (let i = 0; i < size; i++)
-    for (let j = i + 1; j < size; j++) {
-      if (i == j) continue;
-      let d = i * 1;
-      dists[i][j] = d;
-      dists[j][i] = d;
-    }
-  return dists;
-}
-
-class AntColonyOptimizationSettings {}
 
 class AntColonyOptimization {
   /** Влияние феромона на направление */
@@ -60,13 +45,15 @@ class AntColonyOptimization {
    * @param bestLength дистанция лучшего маршрута
    */
   sendMessage(final: boolean, bestTrail: number[], bestLength: number): void {
-    self.postMessage({
-      final: final,
-      ants: this.ants,
-      pheromones: this.pheromones,
-      best: bestTrail,
-      bestLength: bestLength
-    });
+    self.postMessage(
+      new AntWorkerResponse(
+        final,
+        this.ants,
+        this.pheromones,
+        bestTrail,
+        bestLength
+      )
+    );
   }
 
   /**
@@ -74,7 +61,7 @@ class AntColonyOptimization {
    * @param citiesMatrix список расстояний между городами
    * @param antCount количество муравьев в каждом из городов
    */
-  run(citiesMatrix: number[][], antCount: number, maxTime = 1000): void {
+  run(citiesMatrix: number[][], antCount: number, maxAttempts = 1000): void {
     this.distances = citiesMatrix;
     this.ants = this.initAnts(antCount);
     this.initPheromones();
@@ -92,9 +79,9 @@ class AntColonyOptimization {
 
     console.log("Изначальный лучший путь: " + bestLength);
 
-    let time = 0;
+    let attempt = 0;
     console.log("Запуск алгоритма");
-    while (time < maxTime) {
+    while (attempt < maxAttempts) {
       this.sendMessage(false, bestTrail, bestLength);
 
       this.updateAnts();
@@ -106,10 +93,10 @@ class AntColonyOptimization {
         bestLength = currBestLength;
         bestTrail = currBestTrail;
         console.log(
-          "Новая лучшая длмна " + bestLength + " число попыток: " + time
+          "Новая лучшая длмна " + bestLength + " число попыток: " + attempt
         );
       }
-      time++;
+      attempt++;
     }
 
     console.log("Лучший путь найден: ");
@@ -285,7 +272,6 @@ class AntColonyOptimization {
    * Обновление количества феромонов
    */
   updatePheromones(): void {
-
     /** Наличие перехода между городами в маршруте */
     let EdgeInTrail = (
       cityX: number,
@@ -331,15 +317,11 @@ class AntColonyOptimization {
 const antColonyOptimization = new AntColonyOptimization();
 
 self.onmessage = (message: any) => {
-  // run ant
-
-  let graph: number[][] = [
-    [0, 1, 2, 3],
-    [1, 0, 5, 6],
-    [2, 5, 0, 2],
-    [3, 6, 2, 0],
-  ];
-
-  //antColonyOptimization.run(graph, 4, 1000);
-  antColonyOptimization.run(makeGraphDistances(20), 4, 1000);
+  let request = message.data as AntWorkerRequest;
+  
+  antColonyOptimization.run(
+    request.graph,
+    request.numAntsPerVertex,
+    request.attempts
+  );
 };
