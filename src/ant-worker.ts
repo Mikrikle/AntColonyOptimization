@@ -272,18 +272,13 @@ class AntColonyOptimization {
       cityY: number,
       trail: number[]
     ): boolean => {
-      let lastIndex = trail.length - 1;
       let idx = trail.findIndex((city) => city == cityX);
-
-      if (idx == 0 && trail[1] == cityY) return true;
-      else if (idx == 0 && trail[lastIndex] == cityY) return true;
-      else if (idx == 0) return false;
-      else if (idx == lastIndex && trail[lastIndex - 1] == cityY) return true;
-      else if (idx == lastIndex && trail[0] == cityY) return true;
-      else if (idx == lastIndex) return false;
-      else if (trail[idx - 1] == cityY) return true;
-      else if (trail[idx + 1] == cityY) return true;
-      else return false;
+      let idy = trail.findIndex((city) => city == cityY);
+      
+      if(Math.abs(idx - idy) == 1) return true;
+      else if (idx == 0 && idy == trail.length - 1) return true;
+      else if (idx == trail.length - 1 && idy == 0) return true;
+      return false;
     };
 
     // цикл обновления феромонов
@@ -326,7 +321,7 @@ self.onmessage = (message: any) => {
   ];
 
   //antColonyOptimization.run(graph, 4, 1000);
-  antColonyOptimization.run(makeGraphDistances(10), 4, 1000);
+  antColonyOptimization.run(makeGraphDistances(20), 4, 10000);
   self.postMessage({
     result: "ant colony service works",
   });
