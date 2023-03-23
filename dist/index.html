@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title>Webpack App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1"><script defer src="app-bundle.js"></script></head>
+
+    <style>
+      #cy {
+        width: 600px;
+        height: 600px;
+        display: block;
+      }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script defer src="app-bundle.js"></script>
+  </head>
   <body>
+    <div id="cy"></div>
     <div id="output"></div>
-    <input type="range" id="state" style="width: 600px;">
+    <input type="range" id="attempts-range" style="width: 600px" />
   </body>
 </html>
