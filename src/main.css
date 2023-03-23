@@ -1,0 +1,7 @@
+@import "../node_modules/bulma/css/bulma.min.css";
+
+#cy {
+  width: 600px;
+  height: 600px;
+  display: block;
+}

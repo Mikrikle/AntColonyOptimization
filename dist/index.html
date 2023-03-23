@@ -3,19 +3,66 @@
   <head>
     <meta charset="utf-8" />
     <title>Webpack App</title>
-
-    <style>
-      #cy {
-        width: 600px;
-        height: 600px;
-        display: block;
-      }
-    </style>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script defer src="app-bundle.js"></script>
   </head>
   <body>
-    <div id="cy"></div>
+    <div class="columns">
+      <div class="column">
+        <div id="cy"></div>
+      </div>
+      <div class="column">
+
+          <div class="field">
+            <label class="label">Количество муравьев в каждом из гордов</label>
+            <div class="control">
+              <input
+                id="num-ants"
+                class="input"
+                type="number"
+                placeholder="Количество муравьев"
+                value="4"
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Ограничение циклов алгоритма</label>
+            <div class="control">
+              <input
+                id="num-attempts"
+                class="input"
+                type="number"
+                placeholder="Ограничение циклов алгоритма"
+                value="1000"
+              />
+            </div>
+          </div>
+          <hr />
+          <div class="field">
+            <div class="control">
+              <label class="checkbox">
+                <input id="graph-random-use" type="checkbox" checked="true" />
+                Использовать случайный граф
+              </label>
+            </div>
+
+            <label class="label">Размер случайного графа</label>
+            <div class="control">
+              <input
+                id="graph-random-size"
+                class="input"
+                type="number"
+                placeholder="Размер случайного графа"
+                value="17"
+              />
+            </div>
+          </div>
+          <button id="settings-submit" class="button">Ок</button>
+
+      </div>
+    </div>
+
     <div id="output"></div>
     <input type="range" id="attempts-range" style="width: 600px" />
   </body>

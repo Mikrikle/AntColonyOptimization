@@ -1,6 +1,25 @@
 import { CytoscapeService } from "./cytoscape-service";
 import { AntWorkerRequest, AntWorkerResponse } from "./message-models";
+import "./main.css"
 
+const graphRandomUse = document.getElementById("graph-random-use") as HTMLInputElement;
+const graphRandomSize = document.getElementById("graph-random-size") as HTMLInputElement;
+const numAnts = document.getElementById("num-ants") as HTMLInputElement;
+const numAttempts = document.getElementById("num-attempts") as HTMLInputElement;
+const settingsSubmit = document.getElementById("settings-submit") as HTMLButtonElement;
+
+graphRandomUse.onchange = (e) => {
+    graphRandomSize.disabled = !graphRandomUse.checked;
+}
+
+settingsSubmit.onclick = (e) => {
+  attemptsRange.disabled = true;
+  let graph = makeGraphDistances(+graphRandomSize.value);
+  antColony.postMessage(new AntWorkerRequest(graph, +numAnts.value, +numAttempts.value));
+  cy.drawGraph(graph);
+}
+
+const cy = new CytoscapeService();
 const antColony = new Worker(new URL("./ant-worker.ts", import.meta.url));
 const output = document.getElementById("output") as HTMLDivElement;
 const attemptsRange = document.getElementById("attempts-range") as HTMLInputElement;
@@ -27,8 +46,7 @@ attemptsRange.onchange = (event) => {
   cy.colorizedGraph(antData[+attemptsRange.value].pheromones);
 };
 
-let graph = makeGraphDistances(14);
-antColony.postMessage(new AntWorkerRequest(graph, 4, 1000));
+
 
 // тестовый граф
 function makeGraphDistances(size: number) {
@@ -45,19 +63,5 @@ function makeGraphDistances(size: number) {
   return dists;
 }
 
-let cy = new CytoscapeService();
-cy.drawGraph(graph);
 
-document.onclick = () => {
-  let i = 0;
-  let interval = setInterval(() => {
-    i += 1;
-    if(i >= antData.length){
-      clearInterval(interval);
-      return;
-    }
-    attemptsRange.value = `${i}`;
-    output.innerText = `best ${antData[i].best}  length:  ${antData[i].bestLength}`;
-    cy.colorizedGraph(antData[i].pheromones);
-  }, antData.length / 100);
-}
+settingsSubmit.click();

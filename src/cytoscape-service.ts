@@ -58,6 +58,7 @@ export class CytoscapeService {
       }
     }
 
+    this.cy.elements().remove();
     this.cy.add(elements);
 
     const layout = this.cy.elements().layout({
