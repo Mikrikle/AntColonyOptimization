@@ -54,6 +54,22 @@ class AntColonyOptimization {
   }
 
   /**
+   * Отправка текущего состояния расчета основному приложению
+   * @param final вычисления окончены
+   * @param bestTrail лучший маршрут
+   * @param bestLength дистанция лучшего маршрута
+   */
+  sendMessage(final: boolean, bestTrail: number[], bestLength: number): void {
+    self.postMessage({
+      final: final,
+      ants: this.ants,
+      pheromones: this.pheromones,
+      best: bestTrail,
+      bestLength: bestLength
+    });
+  }
+
+  /**
    * Запуск муравьиного алгоритма
    * @param citiesMatrix список расстояний между городами
    * @param antCount количество муравьев в каждом из городов
@@ -79,6 +95,8 @@ class AntColonyOptimization {
     let time = 0;
     console.log("Запуск алгоритма");
     while (time < maxTime) {
+      this.sendMessage(false, bestTrail, bestLength);
+
       this.updateAnts();
       this.updatePheromones();
 
@@ -97,6 +115,8 @@ class AntColonyOptimization {
     console.log("Лучший путь найден: ");
     console.log(bestTrail);
     console.log("Длина лучшего пути: " + bestLength);
+
+    this.sendMessage(true, bestTrail, bestLength);
   }
 
   /**
@@ -265,7 +285,7 @@ class AntColonyOptimization {
    * Обновление количества феромонов
    */
   updatePheromones(): void {
-    
+
     /** Наличие перехода между городами в маршруте */
     let EdgeInTrail = (
       cityX: number,
@@ -274,8 +294,8 @@ class AntColonyOptimization {
     ): boolean => {
       let idx = trail.findIndex((city) => city == cityX);
       let idy = trail.findIndex((city) => city == cityY);
-      
-      if(Math.abs(idx - idy) == 1) return true;
+
+      if (Math.abs(idx - idy) == 1) return true;
       else if (idx == 0 && idy == trail.length - 1) return true;
       else if (idx == trail.length - 1 && idy == 0) return true;
       return false;
@@ -321,8 +341,5 @@ self.onmessage = (message: any) => {
   ];
 
   //antColonyOptimization.run(graph, 4, 1000);
-  antColonyOptimization.run(makeGraphDistances(20), 4, 10000);
-  self.postMessage({
-    result: "ant colony service works",
-  });
+  antColonyOptimization.run(makeGraphDistances(20), 4, 1000);
 };
