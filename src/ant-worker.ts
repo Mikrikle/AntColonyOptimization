@@ -61,9 +61,14 @@ class AntColonyOptimization {
    * @param citiesMatrix список расстояний между городами
    * @param antCount количество муравьев в каждом из городов
    */
-  run(citiesMatrix: number[][], antCount: number, maxAttempts = 1000): void {
-    this.distances = citiesMatrix;
-    this.ants = this.initAnts(antCount);
+  run(data: AntWorkerRequest): void {
+    this.distances = data.graph;
+    this.ants = this.initAnts(data.numAntsPerVertex);
+    let maxAttempts = data.attempts;
+    this.alpha = data.paramAlpha;
+    this.beta = data.paramBeta;
+    this.rho = data.paramRho;
+    this.Q = data.paramQ;
     this.initPheromones();
 
     console.log("Число городов = " + this.numCities);
@@ -318,10 +323,6 @@ const antColonyOptimization = new AntColonyOptimization();
 
 self.onmessage = (message: any) => {
   let request = message.data as AntWorkerRequest;
-  
-  antColonyOptimization.run(
-    request.graph,
-    request.numAntsPerVertex,
-    request.attempts
-  );
+
+  antColonyOptimization.run(request);
 };

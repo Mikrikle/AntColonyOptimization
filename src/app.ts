@@ -1,28 +1,51 @@
 import { CytoscapeService } from "./cytoscape-service";
 import { AntWorkerRequest, AntWorkerResponse } from "./message-models";
-import "./main.css"
+import "./main.css";
 
-const graphRandomUse = document.getElementById("graph-random-use") as HTMLInputElement;
-const graphRandomSize = document.getElementById("graph-random-size") as HTMLInputElement;
+const graphRandomUse = document.getElementById(
+  "graph-random-use"
+) as HTMLInputElement;
+const graphRandomSize = document.getElementById(
+  "graph-random-size"
+) as HTMLInputElement;
 const numAnts = document.getElementById("num-ants") as HTMLInputElement;
 const numAttempts = document.getElementById("num-attempts") as HTMLInputElement;
-const settingsSubmit = document.getElementById("settings-submit") as HTMLButtonElement;
+const settingsSubmit = document.getElementById(
+  "settings-submit"
+) as HTMLButtonElement;
+
+const paramAlpha = document.getElementById("param-alpha") as HTMLButtonElement;
+const paramBeta = document.getElementById("param-beta") as HTMLButtonElement;
+const paramRho = document.getElementById("param-rho") as HTMLButtonElement;
+const paramQ = document.getElementById("param-q") as HTMLInputElement;
 
 graphRandomUse.onchange = (e) => {
-    graphRandomSize.disabled = !graphRandomUse.checked;
-}
+  graphRandomSize.disabled = !graphRandomUse.checked;
+};
 
 settingsSubmit.onclick = (e) => {
   attemptsRange.disabled = true;
   let graph = makeGraphDistances(+graphRandomSize.value);
-  antColony.postMessage(new AntWorkerRequest(graph, +numAnts.value, +numAttempts.value));
+  antColony.postMessage(
+    new AntWorkerRequest(
+      graph,
+      +numAnts.value,
+      +numAttempts.value,
+      +paramAlpha.value,
+      +paramBeta.value,
+      +paramRho.value,
+      +paramQ.value
+    )
+  );
   cy.drawGraph(graph);
-}
+};
 
 const cy = new CytoscapeService();
 const antColony = new Worker(new URL("./ant-worker.ts", import.meta.url));
 const output = document.getElementById("output") as HTMLDivElement;
-const attemptsRange = document.getElementById("attempts-range") as HTMLInputElement;
+const attemptsRange = document.getElementById(
+  "attempts-range"
+) as HTMLInputElement;
 attemptsRange.disabled = true;
 
 const antData: AntWorkerResponse[] = [];
@@ -46,8 +69,6 @@ attemptsRange.onchange = (event) => {
   cy.colorizedGraph(antData[+attemptsRange.value].pheromones);
 };
 
-
-
 // тестовый граф
 function makeGraphDistances(size: number) {
   let dists: number[][] = Array<number[]>(size);
@@ -62,6 +83,5 @@ function makeGraphDistances(size: number) {
     }
   return dists;
 }
-
 
 settingsSubmit.click();

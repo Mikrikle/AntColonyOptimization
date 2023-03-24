@@ -12,6 +12,11 @@ export class AntWorkerRequest {
     constructor(
       public graph: number[][],
       public numAntsPerVertex: number,
-      public attempts: number
+      public attempts: number,
+
+      public paramAlpha: number,
+      public paramBeta: number,
+      public paramRho: number,
+      public paramQ : number
     ) {}
   }
