@@ -7,60 +7,134 @@
     <script defer src="app-bundle.js"></script>
   </head>
   <body>
-    <div class="columns">
-      <div class="column">
-        <div id="cy"></div>
+    <section id="menu">
+      <input type="checkbox" id="menuToggle" checked />
+      <label for="menuToggle"><span>&times;</span><span>&#9776;</span></label>
+      <div id="parametrs">
+        <div class="field">
+          <label class="label">Alpha ( Влияние феромона на направление )</label>
+          <div class="control">
+            <input
+              id="param-alpha"
+              class="input"
+              type="number"
+              placeholder="alpha [0.1; 10]"
+              value="3"
+              min="0.1"
+              max="10"
+              step="0.1"
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Beta ( Видимость )</label>
+          <div class="control">
+            <input
+              id="param-beta"
+              class="input"
+              type="number"
+              placeholder="beta [0.1; 10]"
+              value="2"
+              min="0.1"
+              max="10"
+              step="0.1"
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Rho ( Коэффициент испарения феромонов )</label>
+          <div class="control">
+            <input
+              id="param-rho"
+              class="input"
+              type="number"
+              placeholder="rho [0.01; 0.95]"
+              value="0.01"
+              min="0.01"
+              max="0.95"
+              step="0.01"
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Q ( Коэффициент выработки феромонов )</label>
+          <div class="control">
+            <input
+              id="param-q"
+              class="input"
+              type="number"
+              placeholder="Q [0.1; 10]"
+              value="2"
+              min="0.1"
+              max="10"
+              step="0.1"
+            />
+          </div>
+        </div>
+
+        <hr />
+        <div class="field">
+          <label class="label">Количество муравьев в каждом из гордов</label>
+          <div class="control">
+            <input
+              id="num-ants"
+              class="input"
+              type="number"
+              placeholder="Количество муравьев"
+              value="4"
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Ограничение циклов алгоритма</label>
+          <div class="control">
+            <input
+              id="num-attempts"
+              class="input"
+              type="number"
+              placeholder="Ограничение циклов алгоритма"
+              value="1000"
+            />
+          </div>
+        </div>
+        <hr />
+        <div class="field">
+          <div class="control">
+            <label class="checkbox">
+              <input id="graph-random-use" type="checkbox" checked="true" />
+              Использовать случайный граф
+            </label>
+          </div>
+
+          <label class="label">Размер случайного графа</label>
+          <div class="control">
+            <input
+              id="graph-random-size"
+              class="input"
+              type="number"
+              placeholder="Размер случайного графа"
+              value="6"
+            />
+          </div>
+        </div>
+        <hr />
+        <div class="field">
+          <button
+            id="settings-submit"
+            class="button is-primary is-outlined is-fullwidth"
+          >
+            Запуск
+          </button>
+        </div>
       </div>
-      <div class="column">
+    </section>
 
-          <div class="field">
-            <label class="label">Количество муравьев в каждом из гордов</label>
-            <div class="control">
-              <input
-                id="num-ants"
-                class="input"
-                type="number"
-                placeholder="Количество муравьев"
-                value="4"
-              />
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="label">Ограничение циклов алгоритма</label>
-            <div class="control">
-              <input
-                id="num-attempts"
-                class="input"
-                type="number"
-                placeholder="Ограничение циклов алгоритма"
-                value="1000"
-              />
-            </div>
-          </div>
-          <hr />
-          <div class="field">
-            <div class="control">
-              <label class="checkbox">
-                <input id="graph-random-use" type="checkbox" checked="true" />
-                Использовать случайный граф
-              </label>
-            </div>
-
-            <label class="label">Размер случайного графа</label>
-            <div class="control">
-              <input
-                id="graph-random-size"
-                class="input"
-                type="number"
-                placeholder="Размер случайного графа"
-                value="17"
-              />
-            </div>
-          </div>
-          <button id="settings-submit" class="button">Ок</button>
-
-      </div>
+    <div id="cy-container">
+      <div id="cy"></div>
     </div>
 
     <div id="output"></div>
