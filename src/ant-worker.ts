@@ -87,7 +87,8 @@ class AntColonyOptimization {
     let attempt = 0;
     console.log("Запуск алгоритма");
     while (attempt < maxAttempts) {
-      this.sendMessage(false, bestTrail, bestLength);
+      if(attempt % 50 == 0)
+        this.sendMessage(false, bestTrail, bestLength);
 
       this.updateAnts();
       this.updatePheromones();
