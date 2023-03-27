@@ -8,6 +8,7 @@ const graphRandomUse = document.getElementById(
 const graphRandomSize = document.getElementById(
   "graph-random-size"
 ) as HTMLInputElement;
+const graphInput = document.getElementById("graph-input") as HTMLInputElement;
 const numAnts = document.getElementById("num-ants") as HTMLInputElement;
 const numAttempts = document.getElementById("num-attempts") as HTMLInputElement;
 const settingsSubmit = document.getElementById(
@@ -21,11 +22,15 @@ const paramQ = document.getElementById("param-q") as HTMLInputElement;
 
 graphRandomUse.onchange = (e) => {
   graphRandomSize.disabled = !graphRandomUse.checked;
+  graphInput.disabled = graphRandomUse.checked;
 };
 
 settingsSubmit.onclick = (e) => {
   attemptsRange.disabled = true;
-  let graph = makeGraphDistances(+graphRandomSize.value);
+  let graph = graphRandomUse.checked
+    ? makeGraphDistances(+graphRandomSize.value)
+    : parseGraph();
+
   antColony.postMessage(
     new AntWorkerRequest(
       graph,
@@ -81,6 +86,17 @@ function makeGraphDistances(size: number) {
       dists[i][j] = d;
       dists[j][i] = d;
     }
+  return dists;
+}
+
+function parseGraph() {
+  let text = graphInput.value;
+  let dists: number[][] = [];
+
+  for(let line of text.split("\n")){
+    dists.push(line.split(" ").map(v => +v));
+  }
+
   return dists;
 }
 
