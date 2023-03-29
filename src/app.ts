@@ -20,6 +20,20 @@ const paramBeta = document.getElementById("param-beta") as HTMLButtonElement;
 const paramRho = document.getElementById("param-rho") as HTMLButtonElement;
 const paramQ = document.getElementById("param-q") as HTMLInputElement;
 
+const cy = new CytoscapeService();
+const antColony = new Worker(new URL("./ant-worker.ts", import.meta.url));
+const outputLength = document.getElementById("output-length") as HTMLDivElement;
+const outputPath = document.getElementById("output-path") as HTMLDivElement;
+const attemptsRange = document.getElementById(
+  "attempts-range"
+) as HTMLInputElement;
+const attemptsRangeLabel = document.getElementById(
+  "attempts-range-label"
+) as HTMLLabelElement;
+attemptsRange.disabled = true;
+
+let antData: AntWorkerResponse[] = [];
+
 graphRandomUse.onchange = (e) => {
   graphRandomSize.disabled = !graphRandomUse.checked;
   graphInput.disabled = graphRandomUse.checked;
@@ -31,6 +45,7 @@ settingsSubmit.onclick = (e) => {
     ? makeGraphDistances(+graphRandomSize.value)
     : parseGraph();
 
+  antData = [];
   antColony.postMessage(
     new AntWorkerRequest(
       graph,
@@ -45,31 +60,25 @@ settingsSubmit.onclick = (e) => {
   cy.drawGraph(graph);
 };
 
-const cy = new CytoscapeService();
-const antColony = new Worker(new URL("./ant-worker.ts", import.meta.url));
-const output = document.getElementById("output") as HTMLDivElement;
-const attemptsRange = document.getElementById(
-  "attempts-range"
-) as HTMLInputElement;
-attemptsRange.disabled = true;
-
-const antData: AntWorkerResponse[] = [];
 antColony.onmessage = (message) => {
   let response = message.data as AntWorkerResponse;
   antData.push(response);
-  output.innerText = `best ${response.best}  length:  ${response.bestLength}`;
+  outputLength.innerText = `${response.bestLength}`;
+  outputPath.innerText = `${response.best}`;
   cy.colorizedGraph(response.pheromones);
   if (response.final == true) {
-    attemptsRange.max = `${antData.length - 1}`;
+    attemptsRangeLabel.textContent = `[ ${antData.length} / ${antData.length} ]`;
+    attemptsRange.max = `${antData.length}`;
     attemptsRange.value = `${antData.length - 1}`;
     attemptsRange.disabled = false;
   }
 };
 
 attemptsRange.onchange = (event) => {
-  output.innerText = `best ${antData[+attemptsRange.value].best}  length:  ${
-    antData[+attemptsRange.value].bestLength
-  }`;
+  attemptsRangeLabel.textContent = `[ ${attemptsRange.value} / ${antData.length} ]`;
+
+  outputLength.innerText = `${antData[+attemptsRange.value].bestLength}`;
+  outputPath.innerText = `${antData[+attemptsRange.value].best}`;
 
   cy.colorizedGraph(antData[+attemptsRange.value].pheromones);
 };
@@ -93,8 +102,8 @@ function parseGraph() {
   let text = graphInput.value;
   let dists: number[][] = [];
 
-  for(let line of text.split("\n")){
-    dists.push(line.split(" ").map(v => +v));
+  for (let line of text.split("\n")) {
+    dists.push(line.split(" ").map((v) => +v));
   }
 
   return dists;
