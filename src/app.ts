@@ -75,7 +75,7 @@ antColony.onmessage = (message) => {
 };
 
 attemptsRange.onchange = (event) => {
-  attemptsRangeLabel.textContent = `[ ${attemptsRange.value} / ${antData.length} ]`;
+  attemptsRangeLabel.textContent = `[ ${+attemptsRange.value + 1} / ${antData.length} ]`;
 
   outputLength.innerText = `${antData[+attemptsRange.value].bestLength}`;
   outputPath.innerText = `${antData[+attemptsRange.value].best}`;
