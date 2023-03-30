@@ -22,7 +22,7 @@ export class CytoscapeService {
           width: 1.1,
           "line-color": "#ccc",
           "target-arrow-color": "#ccc",
-          "curve-style": "bezier",
+          //"curve-style": "bezier",
           label: "data(label)",
         },
       },
@@ -45,7 +45,8 @@ export class CytoscapeService {
 
     for (let i = 0; i < graph.length; i++) {
       elements.push({ group: "nodes", data: { id: `n${i}` } });
-      for (let j = i + 1; j < graph[i].length; j++) {
+      for (let j = 0; j < graph[i].length; j++) {
+        if(i == j) continue;
         elements.push({
           group: "edges",
           data: {
@@ -68,11 +69,30 @@ export class CytoscapeService {
     layout.run();
   }
 
+  colorizedPath(values: number[]) {
+    this.cy.edges().style({
+      "line-color": "#ccc",
+      width: 1.1, 
+    })
+    for (let i = 0; i < values.length - 1; i++) {
+      this.cy.elements(`edge[id = 'e${values[i]}${values[i+1]}']`).style({
+        "line-color": HSLToHex(150, 100, 50),
+        width: 3,
+      });
+    }
+  }
+
   colorizedGraph(values: number[][]) {
+
+    this.cy.edges().style({
+      "line-color": "#ccc",
+      width: 1.1, 
+    })
+
     let maxValue = Math.max(...values.map((x) => Math.max(...x)));
 
     for (let i = 0; i < values.length; i++) {
-      for (let j = i + 1; j < values[i].length; j++) {
+      for (let j = 0; j < values[i].length; j++) {
         let nv = values[i][j] / maxValue;
         this.cy.elements(`edge[id = 'e${i}${j}']`).style({
           "line-color": HSLToHex(0, nv * 100, 50),

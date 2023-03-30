@@ -65,10 +65,10 @@ antColony.onmessage = (message) => {
   antData.push(response);
   outputLength.innerText = `${response.bestLength}`;
   outputPath.innerText = `${response.best}`;
-  cy.colorizedGraph(response.pheromones);
+  cy.colorizedPath(response.best);
   if (response.final == true) {
     attemptsRangeLabel.textContent = `[ ${antData.length} / ${antData.length} ]`;
-    attemptsRange.max = `${antData.length}`;
+    attemptsRange.max = `${antData.length - 1}`;
     attemptsRange.value = `${antData.length - 1}`;
     attemptsRange.disabled = false;
   }
@@ -80,7 +80,7 @@ attemptsRange.onchange = (event) => {
   outputLength.innerText = `${antData[+attemptsRange.value].bestLength}`;
   outputPath.innerText = `${antData[+attemptsRange.value].best}`;
 
-  cy.colorizedGraph(antData[+attemptsRange.value].pheromones);
+  cy.colorizedPath(antData[+attemptsRange.value].best);
 };
 
 // тестовый граф
