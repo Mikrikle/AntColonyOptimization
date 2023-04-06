@@ -2,12 +2,12 @@ import cytoscape from "cytoscape";
 
 export class CytoscapeService {
   cy = cytoscape({
-    container: document.getElementById("cy"), // container to render in
+    container: document.getElementById("cy"),
 
     elements: [],
 
     style: [
-      // the stylesheet for the graph
+      // Определение стилей
       {
         selector: "node",
         style: {
@@ -36,6 +36,10 @@ export class CytoscapeService {
 
   constructor() {}
 
+  /**
+   * Отобразить граф
+   * @param graph матрица смежности
+   */
   drawGraph(graph: number[][]) {
     let elements:
       | cytoscape.ElementsDefinition
@@ -69,6 +73,10 @@ export class CytoscapeService {
     layout.run();
   }
 
+  /**
+   * Отобразить путь на графе
+   * @param values точки пути
+   */
   colorizedPath(values: number[]) {
     this.cy.edges().style({
       "line-color": "#ccc",
@@ -82,7 +90,11 @@ export class CytoscapeService {
     }
   }
 
-  colorizedGraph(values: number[][]) {
+  /**
+   * Отобразить взвешенный граф
+   * @param values вес ребёр
+   */
+  colorizedWeights(values: number[][]) {
 
     this.cy.edges().style({
       "line-color": "#ccc",
@@ -146,12 +158,11 @@ function HSLToHex(h: number, s: number, l: number) {
     g = 0;
     b = x;
   }
-  // Having obtained RGB, convert channels to hex
+
   let sr = Math.round((r + m) * 255).toString(16);
   let sg = Math.round((g + m) * 255).toString(16);
   let sb = Math.round((b + m) * 255).toString(16);
 
-  // Prepend 0s, if necessary
   if (sr.length == 1) sr = "0" + sr;
   if (sg.length == 1) sg = "0" + sg;
   if (sb.length == 1) sb = "0" + b;

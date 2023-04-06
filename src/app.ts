@@ -42,7 +42,7 @@ graphRandomUse.onchange = (e) => {
 settingsSubmit.onclick = (e) => {
   attemptsRange.disabled = true;
   let graph = graphRandomUse.checked
-    ? makeGraphDistances(+graphRandomSize.value)
+    ? makeRandomGraphDistances(+graphRandomSize.value)
     : parseGraph();
 
   antData = [];
@@ -75,7 +75,9 @@ antColony.onmessage = (message) => {
 };
 
 attemptsRange.onchange = (event) => {
-  attemptsRangeLabel.textContent = `[ ${+attemptsRange.value + 1} / ${antData.length} ]`;
+  attemptsRangeLabel.textContent = `[ ${+attemptsRange.value + 1} / ${
+    antData.length
+  } ]`;
 
   outputLength.innerText = `${antData[+attemptsRange.value].bestLength}`;
   outputPath.innerText = `${antData[+attemptsRange.value].best}`;
@@ -83,8 +85,12 @@ attemptsRange.onchange = (event) => {
   cy.colorizedPath(antData[+attemptsRange.value].best);
 };
 
-// тестовый граф
-function makeGraphDistances(size: number) {
+/**
+ * Генерация случайного графа
+ * @param size размер графа
+ * @returns случайный граф
+ */
+function makeRandomGraphDistances(size: number) {
   let dists: number[][] = Array<number[]>(size);
   for (let i = 0; i < size; ++i) dists[i] = Array<number>(size).fill(0);
 
@@ -98,7 +104,11 @@ function makeGraphDistances(size: number) {
   return dists;
 }
 
-function parseGraph() {
+/**
+ * Парсинг графа из текстовых данных
+ * @returns граф
+ */
+function parseGraph(): number[][] {
   let text = graphInput.value;
   let dists: number[][] = [];
 
